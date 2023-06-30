@@ -26,4 +26,7 @@ spec:
             name: my-aws-secret
         ports:
         - containerPort: 8080
+        resources:
+         requests:
+          cpu: "500m"
 
