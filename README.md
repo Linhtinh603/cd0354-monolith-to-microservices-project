@@ -86,3 +86,67 @@ Launch the frontend app locally.
     ```
 4. `set_env.sh` is really for your backend application. Frontend applications have a different notion of how to store configurations. Configurations for the application endpoints can be configured inside of the `environments/environment.*ts` files.
 5. In `set_env.sh`, environment variables are set with `export $VAR=value`. Setting it this way is not permanent; every time you open a new terminal, you will have to run `set_env.sh` to reconfigure your environment variables. To verify if your environment variable is set, you can check the variable with a command like `echo $POSTGRES_USERNAME`.
+
+## Use EKS to deploy with some example cmd
+```bash
+aws eks update-kubeconfig --region us-east-1 --name demo --role-arn arn:aws:iam::{xxxxxx}:role/EKS_Cluster
+```
+```bash
+eksctl create cluster --name project3-cluster --region us-east-1 --zones us-east-1a,us-east-1b
+```
+```bash
+docker tag simple-node:latest linhtinh603/simple-node:latest`
+```
+```bash
+kubectl apply -f aws-secret.yaml
+```
+```bash
+kubectl apply -f env-secret.yaml
+```
+```bash
+kubectl apply -f env-configmap.yaml
+```
+```bash
+kubectl apply -f backend-feed-deployment.yaml
+```
+```bash
+kubectl apply -f backend-feed-service.yaml
+```
+```bash
+kubectl apply -f backend-user-deployment.yaml
+```
+```bash
+kubectl apply -f backend-user-service.yaml
+```
+```bash
+kubectl apply -f frontend-deployment.yaml
+```
+```bash
+kubectl apply -f frontend-service.yaml
+```
+```bash
+kubectl apply -f reverseproxy-deployment.yaml
+```
+```bash
+kubectl apply -f reverseproxy-service.yaml
+```
+
+```bash
+kubectl expose deployment frontend --type=LoadBalancer --name=publicfrontend
+```
+```bash
+kubectl expose deployment reverseproxy --type=LoadBalancer --name=publicreverseproxy
+```
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.3/components.yaml
+```
+```bash
+kubectl autoscale deployment backend-feed --cpu-percent=70 --min=3 --max=5
+```
+```bash
+kubectl autoscale deployment backend-user --cpu-percent=70 --min=3 --max=5
+```
+```bash
+kubectl autoscale deployment frontend --cpu-percent=70 --min=3 --max=5
+```
